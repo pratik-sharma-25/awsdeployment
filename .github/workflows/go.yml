@@ -6,23 +6,21 @@ name: Go
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: fetch your code
+      uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.20'
+    - name: login to docker hub
+      run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
 
-    - name: Build
-      run: go build -v ./...
+    - name: build docker image
+      run: docker build -t ${{secrets.DOCKER_USERNAME}}/awsdeployment .
 
-    - name: Test
-      run: go test -v ./...
+    - name: push docker image
+      run: docker push ${{secrets.DOCKER_USERNAME}}/awsdeployment:latest
+
