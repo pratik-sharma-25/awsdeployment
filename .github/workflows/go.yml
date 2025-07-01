@@ -32,10 +32,10 @@ jobs:
       run: docker pull ${{secrets.DOCKER_USERNAME}}/awsdeployment:latest
 
     - name: stop old container
-      run: docker stop awsdeployment
+      run: docker stop awsdeployment || true
 
     - name: remove old container
-      run: docker rm awsdeployment
+      run: docker rm awsdeployment || true
 
     - name: run new container
       run: docker run -d -p 80:8060 --name awsdeployment ${{secrets.DOCKER_USERNAME}}/awsdeployment:latest
