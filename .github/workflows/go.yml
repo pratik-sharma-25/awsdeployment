@@ -10,12 +10,12 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # runnner
     steps:
-    - name: fetch your code
+    - name: fetch your code # task
       uses: actions/checkout@v4
 
-    - name: login to docker hub
+    - name: login to docker hub #automated task
       run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
 
     - name: build docker image
@@ -23,4 +23,21 @@ jobs:
 
     - name: push docker image
       run: docker push ${{secrets.DOCKER_USERNAME}}/awsdeployment:latest
+
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    steps:
+    - name: pull docker image
+      run: docker pull ${{secrets.DOCKER_USERNAME}}/awsdeployment:latest
+
+    - name: stop old container
+      run: docker stop awsdeployment
+
+    - name: remove old container
+      run: docker rm awsdeployment
+
+    - name: run new container
+      run: docker run -d -p 80:8060 --name awsdeployment ${{secrets.DOCKER_USERNAME}}/awsdeployment:latest
+
 
