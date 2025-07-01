@@ -11,5 +11,5 @@ func main() {
 }
 
 func greetUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello World !! Wlwomce"))
+	w.Write([]byte("Hello World !! Welcome world"))
 }
